@@ -40,6 +40,8 @@ import ProfileManagement from './pages/admin/ProfileManagement';
 // import Settings from './pages/admin/Settings';
 import Profile from './pages/admin/Profile';
 import AdminEvents from './pages/admin/Events';
+import Success from './pages/success';
+
 
 const queryClient = new QueryClient();
 
@@ -186,6 +188,7 @@ const App = () => (
               <Route path="tickets" element={<Tickets />} />
               {/* <Route path="settings" element={<Settings />} /> */}
               <Route path="profile" element={<Profile />} />
+              <Route path="success" element={<Success />} />
             </Route>
 
             {/* Legacy Admin Routes (redirect to nested routes) */}
