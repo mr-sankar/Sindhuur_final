@@ -35,6 +35,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { toast } from 'react-toastify';
 import axios from 'axios';
 
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+
 const menuItems = [
   { title: 'Dashboard', url: '/', icon: LayoutDashboard },
   { title: 'User Management', url: '/users', icon: Users },
@@ -56,12 +58,12 @@ export function AdminSidebar() {
   const [showReligionInput, setShowReligionInput] = useState(false);
   const [showCommunityInput, setShowCommunityInput] = useState(false);
   const [religions, setReligions] = useState([]);
-  const [communities, setCommunities] = useState([]);
+  const [communities, setCommunities] = useState([]);     
 
   useEffect(() => {
     const fetchReligions = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/religions');
+        const response = await axios.get(`${BASE_URL}/api/religions`);
         setReligions(response.data.map((item) => item.name));
         if (response.data.length === 0) {
           toast.warning('No religions found in the database.');
@@ -73,7 +75,7 @@ export function AdminSidebar() {
 
     const fetchCommunities = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/communities');
+        const response = await axios.get(`${BASE_URL}/api/communities`);
         setCommunities(response.data.map((item) => item.name));
         if (response.data.length === 0) {
           toast.warning('No communities found in the database.');
@@ -99,7 +101,7 @@ export function AdminSidebar() {
   const handleAddNewReligion = async () => {
     if (newReligion.trim() && !religions.includes(newReligion.trim())) {
       try {
-        const response = await axios.post('http://localhost:5000/api/religions', { name: newReligion.trim() });
+        const response = await axios.post(`${BASE_URL}/api/religions`, { name: newReligion.trim() });
         setReligions([...religions, response.data.name]);
         setNewReligion('');
         setShowReligionInput(false);
@@ -117,7 +119,7 @@ export function AdminSidebar() {
   const handleAddNewCommunity = async () => {
     if (newCommunity.trim() && !communities.includes(newCommunity.trim())) {
       try {
-        const response = await axios.post('http://localhost:5000/api/communities', { name: newCommunity.trim() });
+        const response = await axios.post(`${BASE_URL}/api/communities`, { name: newCommunity.trim() });
         setCommunities([...communities, response.data.name]);
         setNewCommunity('');
         setShowCommunityInput(false);
