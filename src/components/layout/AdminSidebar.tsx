@@ -14,10 +14,12 @@ import {
   Calendar,
   FileText,
   LayoutDashboard,
+  Settings,
   Ticket,
   UserCheck,
   Users,
   Cross,
+  Heart,
 } from 'lucide-react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
@@ -45,6 +47,7 @@ const menuItems = [
   { title: 'Tickets', url: '/tickets', icon: Ticket },
   { title: 'Reports', url: '/reports', icon: FileText },
   { title: 'Religion', url: '#', icon: Cross },
+  { title: 'Success Stories', url: '/success', icon: Heart }, // Added Success Stories item
 ];
 
 export function AdminSidebar() {
@@ -58,7 +61,7 @@ export function AdminSidebar() {
   const [showReligionInput, setShowReligionInput] = useState(false);
   const [showCommunityInput, setShowCommunityInput] = useState(false);
   const [religions, setReligions] = useState([]);
-  const [communities, setCommunities] = useState([]);     
+  const [communities, setCommunities] = useState([]);
 
   useEffect(() => {
     const fetchReligions = async () => {
@@ -89,13 +92,9 @@ export function AdminSidebar() {
     fetchCommunities();
   }, []);
 
-  const isActive = (path: string) => {
-    // Ensure exact match for root path
-    if (path === '/') {
-      return currentPath === '/admin' || currentPath === '/admin/';
-    }
-    // Check if current path starts with the admin-prefixed route
-    return currentPath.startsWith(`/admin${path}`);
+  const isActive = (path) => {
+    if (path === '/') return currentPath === '/';
+    return currentPath.startsWith(path);
   };
 
   const handleAddNewReligion = async () => {
@@ -137,7 +136,7 @@ export function AdminSidebar() {
   return (
     <>
       <Sidebar
-        className={`${collapsed ? 'w-14' : 'w-64'} transition-all duration-300 bg-sidebar text-sidebar-foreground`}
+        className={`${collapsed ? 'w-14' : 'w-64'} transition-all duration-300`}
         collapsible='icon'
       >
         <SidebarContent>
@@ -163,11 +162,7 @@ export function AdminSidebar() {
               <SidebarMenu>
                 {menuItems.map((item) => (
                   <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton
-                      asChild
-                      isActive={item.url !== '#' ? isActive(item.url) : false}
-                      tooltip={collapsed ? item.title : undefined}
-                    >
+                    <SidebarMenuButton asChild>
                       <NavLink
                         to={`/admin${item.url}`}
                         end={item.url === '/'}
@@ -179,11 +174,16 @@ export function AdminSidebar() {
                               }
                             : undefined
                         }
-                        className={() =>
+                        className={({ isActive: navActive }) =>
                           `flex items-center ${
                             collapsed ? 'justify-center' : 'space-x-3'
-                          } px-3 py-4 rounded-lg transition-all duration-200`
+                          } px-3 py-2 rounded-lg transition-smooth min-h-[44px] ${
+                            isActive(item.url) || navActive
+                              ? 'bg-primary text-primary-foreground font-medium'
+                              : 'text-foreground hover:bg-primary/10 hover:text-primary'
+                          }`
                         }
+                        title={collapsed ? item.title : undefined}
                       >
                         <item.icon className='h-5 w-5 flex-shrink-0' />
                         {!collapsed && (
@@ -225,7 +225,7 @@ export function AdminSidebar() {
                   ))}
                 </SelectContent>
               </Select>
-              <Button
+              <Button 
                 className='bg-[rgb(253,187,61)] hover:bg-[rgb(230,170,55)] text-white'
                 onClick={() => setShowReligionInput(true)}
               >
@@ -240,7 +240,7 @@ export function AdminSidebar() {
                   placeholder='Enter new religion'
                   className='w-[180px]'
                 />
-                <Button
+                <Button 
                   className='bg-[rgb(253,187,61)] hover:bg-[rgb(230,170,55)] text-white'
                   onClick={handleAddNewReligion}
                 >
@@ -262,7 +262,7 @@ export function AdminSidebar() {
                   ))}
                 </SelectContent>
               </Select>
-              <Button
+              <Button 
                 className='bg-[rgb(253,187,61)] hover:bg-[rgb(230,170,55)] text-white'
                 onClick={() => setShowCommunityInput(true)}
               >
@@ -277,7 +277,7 @@ export function AdminSidebar() {
                   placeholder='Enter new community'
                   className='w-[180px]'
                 />
-                <Button
+                <Button 
                   className='bg-[rgb(253,187,61)] hover:bg-[rgb(230,170,55)] text-white'
                   onClick={handleAddNewCommunity}
                 >
@@ -289,7 +289,7 @@ export function AdminSidebar() {
           <DialogFooter>
             <Button
               variant='outline'
-              style={{ background: 'rgba(253, 91, 69, 1)', color: 'white' }}
+              style={{ background: "rgba(253, 91, 69, 1)", color: "white" }}
               onClick={() => setIsReligionModalOpen(false)}
             >
               Close
